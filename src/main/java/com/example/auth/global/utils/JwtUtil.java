@@ -26,13 +26,13 @@ public class JwtUtil {
                 .compact();
         return token;
     }
-    public String getByEmailFromTokenAndValidate(String token) {
+    public TokenInfo parseToken(String token) {
         Claims payload = (Claims) Jwts.parser()
                 .verifyWith(secretKey)
                 .build()
                 .parse(token)
                 .getPayload();
-        return payload.getSubject();
+        return TokenInfo.fromClaims(payload);
     }
 
 
