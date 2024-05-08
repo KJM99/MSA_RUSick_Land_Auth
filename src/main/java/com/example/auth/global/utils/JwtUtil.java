@@ -1,10 +1,11 @@
 package com.example.auth.global.utils;
 
 import com.example.auth.domain.entity.User;
+import com.example.auth.global.config.ServerConfig;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -35,11 +36,10 @@ public class JwtUtil {
     }
 
 
-    public JwtUtil(
-            @Value("${jwt.secret}") String secret,
-            @Value("${jwt.expiration}")Long expiration
-    ) {
-        this.expiration = expiration;
-        this.secretKey = Keys.hmacShaKeyFor(secret.getBytes());
+
+    @Autowired
+    public JwtUtil(ServerConfig serverConfig) {
+        this.expiration = serverConfig.getExpiration();
+        this.secretKey = Keys.hmacShaKeyFor(serverConfig.getSecret().getBytes());
     }
 }
