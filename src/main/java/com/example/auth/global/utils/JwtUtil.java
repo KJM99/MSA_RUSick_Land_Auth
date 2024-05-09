@@ -34,6 +34,17 @@ public class JwtUtil {
                 .getPayload();
         return TokenInfo.fromClaims(payload);
     }
+    public boolean validToken(String token) {
+        try {
+            Jwts.parser()
+                    .verifyWith(secretKey)
+                    .build()
+                    .parse(token);
+        }catch (Exception e){
+            return false;
+        }
+        return true;
+    }
 
 
 
