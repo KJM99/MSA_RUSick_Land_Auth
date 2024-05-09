@@ -1,4 +1,4 @@
 package com.example.auth.service;
 
-public class AuthServiceImpl {
+public class AuthServiceImpl implements AuthService {
 }
