@@ -1,30 +1,37 @@
 package com.example.auth.service;
 
+import com.example.auth.domain.entity.User;
 import com.example.auth.domain.entity.UserRepository;
 import com.example.auth.domain.request.TeamRequest;
 import com.example.auth.domain.response.LoginResponse;
 import com.example.auth.domain.response.UserResponse;
+import com.example.auth.global.utils.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Optional;
+import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
     private final RestTemplate restTemplate;
     private UserRepository userRepository;
+    private JwtUtil jwtUtil;
 
     @Override
     public LoginResponse login(String token) {
-        UserResponse response = postRequestParseToken(token);
-        System.out.println(response.id());
-        System.out.println(response.email());
-        System.out.println(response.birthDay());
-        System.out.println(response.gender());
-        System.out.println(response.nickname());
-        return null;
+        User user = postRequestParseToken(token).toEntity();
+        Optional<User> optional = userRepository.findById(user.getId());
+        if (optional.isEmpty()) {
+            userRepository.save(user);
+        }
+        return LoginResponse.from(
+                jwtUtil.createToken(user)
+        );
     }
 
 

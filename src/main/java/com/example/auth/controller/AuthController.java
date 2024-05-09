@@ -1,5 +1,6 @@
 package com.example.auth.controller;
 
+import com.example.auth.domain.response.LoginResponse;
 import com.example.auth.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -11,8 +12,7 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("login")
-    public String login(@RequestHeader("Authorization") String token) {
-        authService.login(token);
-        return "test";
+    public LoginResponse login(@RequestHeader("Authorization") String token) {
+        return authService.login(token);
     }
 }
