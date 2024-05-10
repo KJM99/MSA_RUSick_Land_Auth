@@ -20,7 +20,7 @@ public class JwtUtil {
         String token = Jwts.builder()
                 .claim("id", user.getId())
                 .claim("nickname", user.getNickname())
-                .claim("birthday", user.getBirthDay())
+                .claim("birthDay", user.getBirthDay().toString())
                 .expiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(secretKey)
                 .compact();
@@ -33,6 +33,17 @@ public class JwtUtil {
                 .parse(token)
                 .getPayload();
         return TokenInfo.fromClaims(payload);
+    }
+    public boolean validToken(String token) {
+        try {
+            Jwts.parser()
+                    .verifyWith(secretKey)
+                    .build()
+                    .parse(token);
+        }catch (Exception e){
+            return false;
+        }
+        return true;
     }
 
 
