@@ -34,6 +34,11 @@ public class AuthServiceImpl implements AuthService {
         );
     }
 
+    @Override
+    public LoginResponse refresh(String token) {
+        return null;
+    }
+
 
     private UserResponse postRequestParseToken(String token) {
         TeamRequest request = new TeamRequest("안홍범", "7372");
