@@ -6,6 +6,7 @@ import com.example.auth.domain.request.TeamRequest;
 import com.example.auth.domain.response.LoginResponse;
 import com.example.auth.domain.response.UserResponse;
 import com.example.auth.global.utils.JwtUtil;
+import com.example.auth.global.utils.TokenInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -35,8 +36,10 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public LoginResponse refresh(String token) {
-        return null;
+    public LoginResponse refresh(TokenInfo tokenInfo) {
+        User user = userRepository.findById(UUID.fromString(tokenInfo.id())).orElseThrow();
+        String token = jwtUtil.createToken(user);
+        return LoginResponse.from(token);
     }
 
 

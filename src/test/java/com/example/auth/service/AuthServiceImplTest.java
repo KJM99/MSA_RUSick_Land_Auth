@@ -19,6 +19,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -50,6 +51,7 @@ class AuthServiceImplTest {
     }
     String 토큰_발급(){
         User user = User.builder()
+                .id(UUID.fromString("550e8400-e29b-41d4-a716-446655440000"))
                 .email("tes1@tt.com")
                 .nickname("test")
                 .gender("남")
@@ -111,7 +113,7 @@ class AuthServiceImplTest {
             String token1 = 토큰_발급();
             TokenInfo info1 = jwtUtil.parseToken(token1);
             //when
-            LoginResponse loginResponse2 = authService.refresh("Bearer " + token1);
+            LoginResponse loginResponse2 = authService.refresh(info1);
             TokenInfo info2 = jwtUtil.parseToken(loginResponse2.token());
             //then
             assertEquals(info1.id(), info2.id());
