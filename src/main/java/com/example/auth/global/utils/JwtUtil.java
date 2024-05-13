@@ -20,7 +20,7 @@ public class JwtUtil {
         String token = Jwts.builder()
                 .claim("id", user.getId())
                 .claim("nickname", user.getNickname())
-                .claim("birthday", user.getBirthDay())
+                .claim("birthday", user.getBirthDay().toString())
                 .expiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(secretKey)
                 .compact();
