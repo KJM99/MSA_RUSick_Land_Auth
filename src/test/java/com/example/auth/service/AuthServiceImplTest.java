@@ -5,6 +5,8 @@ import com.example.auth.domain.entity.UserRepository;
 import com.example.auth.domain.request.TeamRequest;
 import com.example.auth.domain.response.LoginResponse;
 import com.example.auth.domain.response.UserResponse;
+import com.example.auth.global.utils.JwtUtil;
+import com.example.auth.global.utils.TokenInfo;
 import com.netflix.discovery.converters.Auto;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Nested;
@@ -15,7 +17,9 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -27,6 +31,8 @@ class AuthServiceImplTest {
     private AuthService authService;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private JwtUtil jwtUtil;
 
     record SignInRequest(String email, String password) { }
     record SignInResponse(String token, String tokenType) {}
@@ -42,6 +48,18 @@ class AuthServiceImplTest {
                         ,SignInResponse.class
                 ).getBody();
         return response;
+    }
+    String 토큰_발급(){
+        User user = User.builder()
+                .id(UUID.fromString("550e8400-e29b-41d4-a716-446655440000"))
+                .email("tes1@tt.com")
+                .nickname("test")
+                .gender("남")
+                .birthDay(LocalDate.parse("2020-05-12"))
+                .build();
+        userRepository.save(user);
+        String token = jwtUtil.createToken(user);
+        return token;
     }
 
     @Nested
@@ -86,5 +104,33 @@ class AuthServiceImplTest {
             assertEquals(newList.size(), oldList.size());
         }
     }
-
+    @Nested
+    @Transactional
+    class 토큰_재발급{
+        @Test
+        void 토큰_재발급_성공(){
+            //given
+            String token1 = 토큰_발급();
+            TokenInfo info1 = jwtUtil.parseToken(token1);
+            //when
+            LoginResponse loginResponse2 = authService.refresh(info1);
+            TokenInfo info2 = jwtUtil.parseToken(loginResponse2.token());
+            //then
+            assertEquals(info1.id(), info2.id());
+            assertEquals(info1.nickname(), info2.nickname());
+        }
+    }
+    @Test
+    void 테스트(){
+        User user = User.builder()
+                .id(UUID.randomUUID())
+                .email("tes1@tt.com")
+                .nickname("test")
+                .gender("남")
+                .birthDay(LocalDate.parse("2020-05-12"))
+                .build();
+        userRepository.save(user);
+        List<User> list1 = userRepository.findAll();
+        System.out.println(list1.get(list1.size()-1).getId());
+    }
 }
