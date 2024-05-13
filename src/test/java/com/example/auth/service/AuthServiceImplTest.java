@@ -120,4 +120,17 @@ class AuthServiceImplTest {
             assertEquals(info1.nickname(), info2.nickname());
         }
     }
+    @Test
+    void 테스트(){
+        User user = User.builder()
+                .id(UUID.randomUUID())
+                .email("tes1@tt.com")
+                .nickname("test")
+                .gender("남")
+                .birthDay(LocalDate.parse("2020-05-12"))
+                .build();
+        userRepository.save(user);
+        List<User> list1 = userRepository.findAll();
+        System.out.println(list1.get(list1.size()-1).getId());
+    }
 }
