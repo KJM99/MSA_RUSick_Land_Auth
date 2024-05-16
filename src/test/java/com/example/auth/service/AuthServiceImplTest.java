@@ -120,6 +120,30 @@ class AuthServiceImplTest {
             assertEquals(info1.nickname(), info2.nickname());
         }
     }
+
+    @Nested
+    class UUID_요청{
+        @Test
+        void 성공(){
+            //given
+            String email = "test1@test.com";
+            //when
+            UUID uuid = authService.getUserIdByEmail(email);
+            User user = userRepository.findById(uuid).get();
+            //then
+            assertNotNull(uuid);
+            assertEquals(email, user.getEmail());
+        }
+        @Test
+        void 실패(){
+            //given
+            String email = "test123456@test.com";
+            //when
+            UUID uuid = authService.getUserIdByEmail(email);
+            //then
+            assertNull(uuid);
+        }
+    }
     @Test
     void 테스트(){
         User user = User.builder()

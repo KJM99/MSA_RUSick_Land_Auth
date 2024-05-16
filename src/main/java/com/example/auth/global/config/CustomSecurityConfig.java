@@ -21,8 +21,8 @@ public class CustomSecurityConfig {
         http.csrf(s -> s.disable());
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         http.authorizeHttpRequests(req ->
-                req.requestMatchers("/api/v1/auth/login").permitAll()
-                    .anyRequest().authenticated()
+                req.requestMatchers("/api/v1/auth/refresh").authenticated()
+                    .anyRequest().permitAll()
         );
         return http.build();
     }

@@ -4,6 +4,7 @@ import com.example.auth.domain.entity.User;
 import com.example.auth.domain.entity.UserRepository;
 import com.example.auth.domain.request.TeamRequest;
 import com.example.auth.domain.response.LoginResponse;
+import com.example.auth.domain.response.UserInfoResponse;
 import com.example.auth.domain.response.UserResponse;
 import com.example.auth.global.utils.JwtUtil;
 import com.example.auth.global.utils.TokenInfo;
@@ -40,6 +41,13 @@ public class AuthServiceImpl implements AuthService {
         User user = userRepository.findById(UUID.fromString(tokenInfo.id())).orElseThrow();
         String token = jwtUtil.createToken(user);
         return LoginResponse.from(token);
+    }
+
+    @Override
+    public UserInfoResponse getUserIdByEmail(String email) {
+        User user = userRepository.findUserByEmail(email);
+        if(user == null) return null;
+        return new UserInfoResponse(user.getId(), user.getNickname());
     }
 
 
